@@ -1,0 +1,513 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>原创英语学习包</title>
+    <style>
+      :root {
+        --bg: #f4efe5;
+        --panel: #fffaf0;
+        --line: #d7ccb7;
+        --text: #2f2418;
+        --muted: #6d5a45;
+        --accent: #a35f2c;
+        --accent-soft: #f2dfca;
+        --accent-strong: #7d451b;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        margin: 0;
+        font-family: "Space Grotesk", "Noto Sans SC", "Segoe UI", sans-serif;
+        color: var(--text);
+        background:
+          radial-gradient(circle at top left, rgba(163, 95, 44, 0.16), transparent 28%),
+          linear-gradient(180deg, #fbf6ee 0%, var(--bg) 100%);
+      }
+
+      a {
+        color: var(--accent-strong);
+      }
+
+      .wrap {
+        width: min(1040px, calc(100% - 32px));
+        margin: 0 auto;
+        padding: 32px 0 56px;
+      }
+
+      .hero {
+        padding: 28px;
+        border: 1px solid var(--line);
+        border-radius: 28px;
+        background:
+          linear-gradient(135deg, rgba(163, 95, 44, 0.12), rgba(255, 250, 240, 0.96)),
+          var(--panel);
+        box-shadow: 0 24px 48px rgba(83, 54, 24, 0.08);
+      }
+
+      .eyebrow {
+        display: inline-flex;
+        padding: 6px 12px;
+        border-radius: 999px;
+        background: rgba(163, 95, 44, 0.12);
+        color: var(--accent-strong);
+        font-size: 12px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      h1, h2, h3 {
+        margin: 0;
+        line-height: 1.15;
+      }
+
+      h1 {
+        margin-top: 14px;
+        font-size: clamp(34px, 6vw, 56px);
+      }
+
+      .hero p {
+        max-width: 760px;
+        color: var(--muted);
+        font-size: 17px;
+        line-height: 1.7;
+      }
+
+      .note {
+        margin-top: 18px;
+        padding: 14px 16px;
+        border-left: 4px solid var(--accent);
+        background: rgba(163, 95, 44, 0.08);
+        border-radius: 16px;
+      }
+
+      .toc {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+        gap: 12px;
+        margin: 22px 0 0;
+      }
+
+      .toc a {
+        display: block;
+        padding: 14px 16px;
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        background: rgba(255, 250, 240, 0.85);
+        text-decoration: none;
+        font-weight: 700;
+      }
+
+      section {
+        margin-top: 22px;
+        padding: 24px;
+        border: 1px solid var(--line);
+        border-radius: 24px;
+        background: rgba(255, 250, 240, 0.92);
+        box-shadow: 0 18px 32px rgba(83, 54, 24, 0.05);
+      }
+
+      section > p,
+      li,
+      td,
+      th {
+        line-height: 1.7;
+        color: var(--muted);
+      }
+
+      .kicker {
+        margin-bottom: 10px;
+        color: var(--accent);
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 16px;
+        margin-top: 18px;
+      }
+
+      .card {
+        padding: 18px;
+        border: 1px solid var(--line);
+        border-radius: 20px;
+        background: #fffdf8;
+      }
+
+      .card h3 {
+        font-size: 20px;
+      }
+
+      .card ul {
+        padding-left: 18px;
+        margin: 14px 0 0;
+      }
+
+      .prompt,
+      .script,
+      .passage,
+      .frame {
+        margin-top: 16px;
+        padding: 16px 18px;
+        border-radius: 18px;
+        background: var(--accent-soft);
+      }
+
+      .prompt strong,
+      .script strong,
+      .passage strong,
+      .frame strong {
+        color: var(--text);
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 16px;
+        overflow: hidden;
+        border-radius: 18px;
+      }
+
+      th,
+      td {
+        padding: 12px 14px;
+        border: 1px solid var(--line);
+        text-align: left;
+        vertical-align: top;
+        background: rgba(255, 250, 240, 0.85);
+      }
+
+      th {
+        color: var(--text);
+        background: rgba(163, 95, 44, 0.1);
+      }
+
+      .footer {
+        margin-top: 22px;
+        padding: 18px 20px;
+        border-radius: 20px;
+        background: #2f2418;
+        color: #f8efe2;
+      }
+
+      .footer p {
+        margin: 0;
+        color: rgba(248, 239, 226, 0.8);
+      }
+
+      @media (max-width: 720px) {
+        .wrap {
+          width: min(100% - 20px, 1040px);
+          padding-top: 18px;
+        }
+
+        .hero,
+        section {
+          padding: 18px;
+          border-radius: 20px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="wrap">
+      <header class="hero">
+        <span class="eyebrow">Original Materials</span>
+        <h1>原创英语学习包</h1>
+        <p>
+          这是一套为当前 App 现场制作的原创学习材料。内容覆盖词汇、阅读、口语、写作和周计划，
+          目标是让你在不依赖外部版权材料的情况下，也能稳定打卡和练习输出。
+        </p>
+        <div class="note">
+          你可以直接在项目里公开使用这些内容，也可以按自己的节奏继续扩写、删改或拆成更细的小模块。
+        </div>
+        <nav class="toc" aria-label="目录">
+          <a href="#vocabulary">词汇训练</a>
+          <a href="#reading">精读材料</a>
+          <a href="#speaking">口语跟读</a>
+          <a href="#writing">写作模板</a>
+          <a href="#weekly-plan">7 天计划</a>
+        </nav>
+      </header>
+
+      <section id="vocabulary">
+        <div class="kicker">Vocabulary</div>
+        <h2>词块与复现训练</h2>
+        <p>
+          先学能反复用到的表达，而不是零散背单词。下面两组词适合科研、学术阅读、口语表达和日常复盘。
+        </p>
+        <div class="grid">
+          <article class="card">
+            <h3>Academic Action Verbs</h3>
+            <ul>
+              <li><strong>analyze</strong>: break a problem into smaller parts</li>
+              <li><strong>compare</strong>: examine two or more items side by side</li>
+              <li><strong>estimate</strong>: give a careful rough number</li>
+              <li><strong>justify</strong>: explain why a choice is reasonable</li>
+              <li><strong>revise</strong>: improve after feedback</li>
+            </ul>
+          </article>
+          <article class="card">
+            <h3>Speaking Control Phrases</h3>
+            <ul>
+              <li><strong>To put it simply</strong>: simplify an idea</li>
+              <li><strong>What I mean is</strong>: repair unclear speech</li>
+              <li><strong>A better example would be</strong>: replace a weak example</li>
+              <li><strong>The key point is that</strong>: refocus the answer</li>
+              <li><strong>From my perspective</strong>: move into opinion mode</li>
+            </ul>
+          </article>
+        </div>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Expression</th>
+              <th>Original Example</th>
+              <th>Output Task</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>analyze a pattern</td>
+              <td>I try to analyze the pattern behind my listening mistakes instead of blaming my memory.</td>
+              <td>把句子改成和口语、写作、阅读任一主题相关的版本。</td>
+            </tr>
+            <tr>
+              <td>justify a decision</td>
+              <td>She could clearly justify her study plan because each task had a specific purpose.</td>
+              <td>用你自己的学习安排造句。</td>
+            </tr>
+            <tr>
+              <td>revise after feedback</td>
+              <td>He revised the paragraph after noticing that the topic sentence was too vague.</td>
+              <td>写一句你最近最该 revise 的内容。</td>
+            </tr>
+            <tr>
+              <td>the key point is that</td>
+              <td>The key point is that short daily practice is easier to repeat than extreme weekend study.</td>
+              <td>用它开头说 20 秒观点。</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="prompt">
+          <strong>3 分钟检索练习：</strong>
+          合上页面，用英文说出 3 个学术动词、2 个口语控制短语，并各造一个和你今天学习有关的句子。
+        </div>
+      </section>
+
+      <section id="reading">
+        <div class="kicker">Reading</div>
+        <h2>原创精读材料</h2>
+        <div class="passage">
+          <strong>Passage A: Why Short Daily Sessions Work Better</strong>
+          <p>
+            Many learners believe that long study sessions show stronger commitment. In reality, consistency often matters more than intensity.
+            A ninety-minute session can feel productive, but it is also easy to postpone. A smaller session, such as twenty minutes of focused listening
+            or ten minutes of speaking practice, creates less resistance. The learner starts before doubt has time to grow.
+          </p>
+          <p>
+            Short sessions are also easier to repeat. Repetition builds familiarity, and familiarity lowers mental friction. When a task becomes routine,
+            the brain spends less energy on decision-making and more energy on the task itself. This is why daily practice can quietly outperform dramatic effort.
+            It may look less impressive from the outside, but it produces more contact hours over time.
+          </p>
+        </div>
+        <div class="prompt">
+          <strong>Questions:</strong>
+          1. Why can a shorter session reduce resistance?
+          2. What does “mental friction” mean in this passage?
+          3. Summarize the main idea in 30 words.
+        </div>
+
+        <div class="passage">
+          <strong>Passage B: Feedback Is Useful Only When It Changes Behavior</strong>
+          <p>
+            Many students collect corrections but do not change their habits. They underline mistakes, save screenshots, and promise to review them later.
+            However, feedback has little value if it never enters the next round of practice. Real improvement begins when a learner converts feedback into a narrow,
+            visible action. For example, instead of writing “grammar problem” in a notebook, the learner can write “check verb tense in the second sentence before submitting.”
+          </p>
+          <p>
+            This kind of feedback is specific, memorable, and measurable. It reduces confusion and gives the learner one clear target. Over time, small corrections become stable behavior.
+            The final goal is not to collect more comments. The goal is to make fewer repeat errors.
+          </p>
+        </div>
+        <div class="prompt">
+          <strong>Questions:</strong>
+          1. What is the difference between collecting feedback and using feedback?
+          2. Why is a narrow action more effective?
+          3. Write one sentence about a repeat error you want to reduce.
+        </div>
+      </section>
+
+      <section id="speaking">
+        <div class="kicker">Speaking</div>
+        <h2>跟读与口语输出脚本</h2>
+        <div class="script">
+          <strong>Script 1: Daily Reset</strong>
+          <p>
+            When I miss a study day, I try not to turn it into a dramatic failure. I look at the next available hour and restart with a smaller task.
+            My goal is not to feel perfect. My goal is to return quickly and keep my routine alive.
+          </p>
+        </div>
+        <div class="script">
+          <strong>Script 2: Learning Through Output</strong>
+          <p>
+            Input gives me examples, but output shows me what I truly know. When I speak or write, I discover missing words, weak logic, and unclear grammar.
+            That discomfort is useful because it tells me what to practice next.
+          </p>
+        </div>
+        <div class="script">
+          <strong>Script 3: Focused Reading</strong>
+          <p>
+            I no longer read only for completion. I read to notice structure, transitions, and reusable expressions. Even one short paragraph can teach me a lot if I slow down enough to observe it carefully.
+          </p>
+        </div>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Task</th>
+              <th>How to do it</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Shadowing</td>
+              <td>先听自己读，再对照文本纠正停顿、重音和连读。</td>
+            </tr>
+            <tr>
+              <td>Retelling</td>
+              <td>合上文本，用自己的话复述主要观点，允许换词但不要丢逻辑。</td>
+            </tr>
+            <tr>
+              <td>Timed output</td>
+              <td>设定 60 秒，围绕脚本主题说自己的经历或看法。</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="prompt">
+          <strong>今日口语任务：</strong>
+          任选一段脚本，跟读 3 轮，再录 1 段 60 秒扩展回答，主题可以是“最近一次学习中断后如何恢复”。
+        </div>
+      </section>
+
+      <section id="writing">
+        <div class="kicker">Writing</div>
+        <h2>原创写作模板与提示</h2>
+        <div class="grid">
+          <article class="frame">
+            <strong>Summary Frame</strong>
+            <p>
+              The passage argues that _____. It explains this point by showing that _____. Overall, the writer suggests that _____.
+            </p>
+          </article>
+          <article class="frame">
+            <strong>Opinion Frame</strong>
+            <p>
+              From my perspective, _____. The main reason is that _____. A useful example is _____. For this reason, I believe _____.
+            </p>
+          </article>
+          <article class="frame">
+            <strong>Reflection Frame</strong>
+            <p>
+              Today I did well in _____. However, I still need to improve _____. Tomorrow I will focus on one specific action: _____.
+            </p>
+          </article>
+          <article class="frame">
+            <strong>Email Frame</strong>
+            <p>
+              Dear ____, I am writing to ask about _____. I would appreciate it if you could clarify _____. Thank you for your time and support.
+            </p>
+          </article>
+        </div>
+
+        <div class="prompt">
+          <strong>Daily Writing Prompts:</strong>
+          <ul>
+            <li>Describe one learning habit that saves time but still feels difficult to maintain.</li>
+            <li>Explain why speaking practice often reveals weaknesses faster than reading.</li>
+            <li>Write a short reflection on one mistake you repeated this week.</li>
+          </ul>
+        </div>
+      </section>
+
+      <section id="weekly-plan">
+        <div class="kicker">Weekly Plan</div>
+        <h2>7 天原创训练安排</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Day</th>
+              <th>Main Focus</th>
+              <th>Suggested Output</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Day 1</td>
+              <td>词块 + 跟读</td>
+              <td>说出 5 个表达并各造一句</td>
+            </tr>
+            <tr>
+              <td>Day 2</td>
+              <td>Passage A 精读</td>
+              <td>30 词摘要</td>
+            </tr>
+            <tr>
+              <td>Day 3</td>
+              <td>Script 2 跟读 + 录音</td>
+              <td>60 秒口头复述</td>
+            </tr>
+            <tr>
+              <td>Day 4</td>
+              <td>Passage B 精读</td>
+              <td>写一条自己的纠错规则</td>
+            </tr>
+            <tr>
+              <td>Day 5</td>
+              <td>写作模板</td>
+              <td>完成 1 段 80 到 120 词短文</td>
+            </tr>
+            <tr>
+              <td>Day 6</td>
+              <td>混合复习</td>
+              <td>复述 2 个观点 + 回看错误</td>
+            </tr>
+            <tr>
+              <td>Day 7</td>
+              <td>轻量复盘</td>
+              <td>写 3 句反思，定下下周 1 个重点</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="prompt">
+          <strong>周复盘问题：</strong>
+          1. 我这周最稳定的任务是什么？
+          2. 我最容易跳过的任务是什么？
+          3. 下周我只保留一个核心动作，它应该是什么？
+        </div>
+      </section>
+
+      <footer class="footer">
+        <p>
+          这套材料为当前项目原创编写，可直接用于你的 GitHub Pages 英语学习 App。
+        </p>
+      </footer>
+    </main>
+  </body>
+</html>

@@ -1,0 +1,17 @@
+*
+!.gitignore
+!.nojekyll
+!CNAME
+!index.html
+!styles.css
+!app.js
+!manifest.json
+!sw.js
+!supabase-config.js
+!supabase-config.example.js
+!icons/
+!icons/**
+!materials/
+!materials/**
+!supabase/
+!supabase/**

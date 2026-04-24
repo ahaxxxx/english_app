@@ -1,0 +1,297 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>英语打卡 Lab</title>
+    <meta
+      name="description"
+      content="适合放到 GitHub Pages 的英语学习打卡网页 App，支持手机和电脑使用。"
+    >
+    <meta name="theme-color" content="#103a30">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="英语打卡 Lab">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/svg+xml" href="icons/icon-192.svg">
+    <link rel="apple-touch-icon" href="icons/icon-192.svg">
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase-config.js"></script>
+    <script src="app.js" defer></script>
+  </head>
+  <body>
+    <div class="page-shell">
+      <header class="hero panel">
+        <div class="hero-copy">
+          <p class="eyebrow">English Check-in System</p>
+          <h1>英语打卡 Lab</h1>
+          <p class="hero-text">
+            把每天的英语学习收束成一个稳定闭环：输入、提取、输出、纠错、复习。
+          </p>
+          <div class="hero-actions">
+            <button id="installBtn" class="primary-btn" hidden>安装到手机/桌面</button>
+            <a class="ghost-btn" href="GitHubPages发布说明.md" target="_blank" rel="noreferrer">
+              查看发布说明
+            </a>
+            <a class="ghost-btn" href="Supabase接入说明.md" target="_blank" rel="noreferrer">
+              查看 Supabase 配置
+            </a>
+          </div>
+          <p class="hero-tip">
+            这版支持本地模式和 Supabase 云同步。登录同一邮箱后，手机和电脑可以共用一份记录。
+          </p>
+        </div>
+
+        <div class="hero-panel">
+          <div class="hero-topline">
+            <span id="heroDateLabel" class="status-pill">今天</span>
+            <span id="heroCheckStatus" class="status-pill muted">未打卡</span>
+          </div>
+          <p id="heroSummary" class="hero-summary">今日完成度 0%，先把第一项做起来。</p>
+          <div class="hero-progress">
+            <div class="hero-progress-bar">
+              <span id="heroProgressBar"></span>
+            </div>
+            <div class="hero-progress-meta">
+              <span id="heroMinutesMeta">0 / 90 分钟</span>
+              <span id="heroCompletionMeta">0%</span>
+            </div>
+          </div>
+          <div class="quote-card">
+            <p class="quote-label">今日提醒</p>
+            <p class="quote-text">
+              与其继续囤资料，不如把已有材料跑成稳定训练循环。
+            </p>
+          </div>
+        </div>
+      </header>
+
+      <main class="layout">
+        <section class="panel auth-panel">
+          <div class="section-head">
+            <div>
+              <p class="section-kicker">Supabase Sync</p>
+              <h2>账号与云同步</h2>
+            </div>
+          </div>
+
+          <div class="auth-grid">
+            <div class="auth-card auth-card-primary">
+              <div class="auth-status-line">
+                <span id="cloudModeBadge" class="status-pill">本地模式</span>
+                <span id="cloudUserBadge" class="status-pill muted">未登录</span>
+              </div>
+              <p id="cloudStatusText" class="auth-status-text">
+                还没有接上云端，当前只会保存到这个浏览器。
+              </p>
+
+              <form id="authForm" class="auth-form">
+                <label class="field">
+                  <span>登录邮箱</span>
+                  <input
+                    id="authEmailInput"
+                    name="email"
+                    type="email"
+                    autocomplete="email"
+                    placeholder="例如：you@example.com"
+                  >
+                </label>
+                <button id="sendMagicLinkBtn" class="primary-btn full-width" type="submit">
+                  发送登录链接
+                </button>
+              </form>
+            </div>
+
+            <div class="auth-card">
+              <h3>同步状态</h3>
+              <p id="syncMetaText" class="auth-meta">
+                登录后会自动检查云端和本地哪一份更新，然后以较新的为准。
+              </p>
+              <div class="auth-actions">
+                <button id="syncNowBtn" class="primary-btn" type="button">立即同步</button>
+                <button id="pullCloudBtn" class="ghost-btn" type="button">云端覆盖本地</button>
+                <button id="signOutBtn" class="ghost-btn" type="button">退出登录</button>
+              </div>
+              <p id="authHint" class="auth-hint">
+                第一次接入前，请先按说明创建 Supabase 数据表并填写配置文件。
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="section-head">
+            <div>
+              <p class="section-kicker">Dashboard</p>
+              <h2>学习概览</h2>
+            </div>
+          </div>
+          <div id="statsGrid" class="stats-grid"></div>
+        </section>
+
+        <section class="panel">
+          <div class="section-head">
+            <div>
+              <p class="section-kicker">Daily Log</p>
+              <h2>当天打卡</h2>
+            </div>
+            <div class="date-tools">
+              <button id="prevDayBtn" class="mini-btn" type="button">前一天</button>
+              <input id="datePicker" class="date-input" type="date">
+              <button id="nextDayBtn" class="mini-btn" type="button">后一天</button>
+            </div>
+          </div>
+
+          <div class="checkin-toolbar">
+            <div id="selectedDateSummary" class="checkin-summary">正在查看今天</div>
+            <div class="checkin-actions">
+              <button id="toggleCheckInBtn" class="primary-btn" type="button">完成今日打卡</button>
+              <button id="resetDayBtn" class="ghost-btn" type="button">清空当天记录</button>
+            </div>
+          </div>
+
+          <div id="taskGrid" class="task-grid"></div>
+        </section>
+
+        <section class="panel split-panel">
+          <div>
+            <div class="section-head compact">
+              <div>
+                <p class="section-kicker">Focus</p>
+                <h2>今日聚焦</h2>
+              </div>
+            </div>
+            <label class="field">
+              <span>今天最重要的一件事</span>
+              <input id="focusInput" type="text" placeholder="例如：TED-ED 精听 20 分钟 + 1 分钟复述">
+            </label>
+            <label class="field">
+              <span>复盘与感受</span>
+              <textarea
+                id="reflectionInput"
+                rows="8"
+                placeholder="记录今天卡住的地方、收获的表达、下次要改什么。"
+              ></textarea>
+            </label>
+          </div>
+
+          <div>
+            <div class="section-head compact">
+              <div>
+                <p class="section-kicker">Settings</p>
+                <h2>节奏设置</h2>
+              </div>
+            </div>
+            <label class="field">
+              <span>页面称呼</span>
+              <input id="displayNameInput" type="text" placeholder="例如：博湛">
+            </label>
+            <label class="field">
+              <span>每日目标时长（分钟）</span>
+              <input id="goalMinutesInput" type="number" min="30" max="360" step="5">
+            </label>
+            <div class="setting-note">
+              这个目标只用于统计和提醒，不会强制限制你。
+            </div>
+            <div class="formula-card">
+              <p class="formula-title">推荐闭环</p>
+              <p class="formula-text">输入 -> 提取 -> 输出 -> 纠错 -> 间隔复习</p>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel split-panel">
+          <div>
+            <div class="section-head compact">
+              <div>
+                <p class="section-kicker">Heatmap</p>
+                <h2>最近 28 天</h2>
+              </div>
+            </div>
+            <div id="heatmapGrid" class="heatmap-grid"></div>
+            <div class="heatmap-legend">
+              <span>低</span>
+              <div class="legend-steps">
+                <i class="level-0"></i>
+                <i class="level-1"></i>
+                <i class="level-2"></i>
+                <i class="level-3"></i>
+                <i class="level-4"></i>
+              </div>
+              <span>高</span>
+            </div>
+          </div>
+
+          <div>
+            <div class="section-head compact">
+              <div>
+                <p class="section-kicker">Resources</p>
+                <h2>当前资料入口</h2>
+              </div>
+            </div>
+            <div id="resourceGrid" class="resource-grid"></div>
+
+            <form id="resourceForm" class="resource-form">
+              <label class="field">
+                <span>新增自定义资源名称</span>
+                <input name="title" type="text" required placeholder="例如：我的口语录音表">
+              </label>
+              <label class="field">
+                <span>资源链接</span>
+                <input
+                  name="url"
+                  type="text"
+                  required
+                  placeholder="例如：https://example.com/article.pdf 或 ./materials/original-english-kit.html#reading"
+                >
+              </label>
+              <label class="field">
+                <span>分类</span>
+                <input name="category" type="text" placeholder="例如：口语">
+              </label>
+              <button class="primary-btn full-width" type="submit">添加到我的资源区</button>
+            </form>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="section-head">
+            <div>
+              <p class="section-kicker">Backup</p>
+              <h2>备份与迁移</h2>
+            </div>
+          </div>
+          <div class="backup-grid">
+            <div class="backup-card">
+              <h3>导出数据</h3>
+              <p>把当前浏览器里的全部打卡记录导出成 JSON 文件，方便备份。</p>
+              <button id="exportBtn" class="primary-btn" type="button">导出 JSON</button>
+            </div>
+            <div class="backup-card">
+              <h3>导入数据</h3>
+              <p>把之前导出的 JSON 导回这个页面，适合换浏览器或换设备后恢复。</p>
+              <input id="importFileInput" type="file" accept="application/json" hidden>
+              <button id="importBtn" class="ghost-btn" type="button">选择并导入</button>
+            </div>
+            <div class="backup-card sync-note-card">
+              <h3>跨设备说明</h3>
+              <p>
+                这版已经支持 Supabase 同步，但前提是你已经按说明配置好项目、表结构和邮箱登录。
+              </p>
+              <p>
+                如果暂时没配置 Supabase，页面仍然会退回本地模式，导出导入功能也能继续用。
+              </p>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <footer class="footer-note">
+        适合 GitHub Pages 部署。手机端建议“添加到主屏幕”，桌面端可直接安装为独立应用。
+      </footer>
+    </div>
+
+    <div id="toast" class="toast" aria-live="polite"></div>
+  </body>
+</html>
