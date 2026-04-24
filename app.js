@@ -338,6 +338,17 @@ async function handleAuthStateChange(event, session) {
   await syncWithCloud({ mode: "merge", silent: event === "INITIAL_SESSION" });
 }
 
+function getAuthRedirectUrl() {
+  if (typeof window === "undefined") {
+    return "";
+  }
+
+  const url = new URL(window.location.href);
+  url.hash = "";
+  url.search = "";
+  return url.toString();
+}
+
 async function handleAuthSubmit(event) {
   event.preventDefault();
 
@@ -357,7 +368,12 @@ async function handleAuthSubmit(event) {
   renderAuthPanel();
 
   try {
-    const { error } = await cloud.client.auth.signInWithOtp({ email });
+    const { error } = await cloud.client.auth.signInWithOtp({
+      email,
+      options: {
+        emailRedirectTo: getAuthRedirectUrl(),
+      },
+    });
     if (error) {
       throw error;
     }
